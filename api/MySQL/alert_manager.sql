@@ -5,13 +5,13 @@ USE alert_manager;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(250) DEFAULT NULL,
-  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
   `password_hash` text NOT NULL,
   `api_key` varchar(32) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `phone` (`phone`)
 );
  
 CREATE TABLE IF NOT EXISTS `alerts` (

@@ -23,15 +23,15 @@ class DbHandler {
     /**
      * Creating new user
      * @param String $name User full name
-     * @param String $email User login email id
+     * @param String $phone User login phone id
      * @param String $password User login password
      */
-    public function createUser($name, $email, $password) {
+    public function createUser($name, $phone, $password) {
         require_once 'PassHash.php';
         $response = array();
 
         // First check if user already existed in db
-        if (!$this->isUserExists($email)) {
+        if (!$this->isUserExists($phone)) {
             // Generating password hash
             $password_hash = PassHash::hash($password);
 
@@ -39,8 +39,8 @@ class DbHandler {
             $api_key = $this->generateApiKey();
 
             // insert query
-            $stmt = $this->conn->prepare("INSERT INTO users(name, email, password_hash, api_key, status) values(?, ?, ?, ?, 1)");
-            $stmt->bind_param("ssss", $name, $email, $password_hash, $api_key);
+            $stmt = $this->conn->prepare("INSERT INTO users(name, phone, password_hash, api_key, status) values(?, ?, ?, ?, 1)");
+            $stmt->bind_param("ssss", $name, $phone, $password_hash, $api_key);
 
             $result = $stmt->execute();
 
@@ -55,7 +55,7 @@ class DbHandler {
                 return USER_CREATE_FAILED;
             }
         } else {
-            // User with same email already existed in the db
+            // User with same phone already existed in the db
             return USER_ALREADY_EXISTED;
         }
 
@@ -64,15 +64,15 @@ class DbHandler {
 
     /**
      * Checking user login
-     * @param String $email User login email id
+     * @param String $phone User login phone id
      * @param String $password User login password
      * @return boolean User login status success/fail
      */
-    public function checkLogin($email, $password) {
-        // fetching user by email
-        $stmt = $this->conn->prepare("SELECT password_hash FROM users WHERE email = ?");
+    public function checkLogin($phone, $password) {
+        // fetching user by phone
+        $stmt = $this->conn->prepare("SELECT password_hash FROM users WHERE phone = ?");
 
-        $stmt->bind_param("s", $email);
+        $stmt->bind_param("s", $phone);
 
         $stmt->execute();
 
@@ -81,7 +81,7 @@ class DbHandler {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            // Found user with the email
+            // Found user with the phone
             // Now verify the password
 
             $stmt->fetch();
@@ -98,19 +98,19 @@ class DbHandler {
         } else {
             $stmt->close();
 
-            // user not existed with the email
+            // user not existed with the phone
             return FALSE;
         }
     }
 
     /**
-     * Checking for duplicate user by email address
-     * @param String $email email to check in db
+     * Checking for duplicate user by phone address
+     * @param String $phone phone to check in db
      * @return boolean
      */
-    private function isUserExists($email) {
-        $stmt = $this->conn->prepare("SELECT id from users WHERE email = ?");
-        $stmt->bind_param("s", $email);
+    private function isUserExists($phone) {
+        $stmt = $this->conn->prepare("SELECT id from users WHERE phone = ?");
+        $stmt->bind_param("s", $phone);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
@@ -119,19 +119,19 @@ class DbHandler {
     }
 
     /**
-     * Fetching user by email
-     * @param String $email User email id
+     * Fetching user by phone
+     * @param String $phone User phone id
      */
-    public function getUserByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT name, email, api_key, status, created_at FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
+    public function getUserByPhone($phone) {
+        $stmt = $this->conn->prepare("SELECT name, phone, api_key, status, created_at FROM users WHERE phone = ?");
+        $stmt->bind_param("s", $phone);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name, $email, $api_key, $status, $created_at);
+            $stmt->bind_result($name, $phone, $api_key, $status, $created_at);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
-            $user["email"] = $email;
+            $user["phone"] = $phone;
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;

@@ -104,7 +104,7 @@ $app->post('/login', function() use ($app) {
             // check for correct phone and password
             if ($db->checkLogin($phone, $password)) {
                 // get the user by phone
-                $user = $db->getUserByphone($phone);
+                $user = $db->getUserByPhone($phone);
 
                 if ($user != NULL) {
                     $response["error"] = false;
