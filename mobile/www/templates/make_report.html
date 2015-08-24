@@ -1,0 +1,41 @@
+<ion-view view-title="Submit Bin Collection Report" class="app-content">
+    <ion-content>
+        <div class="padding">
+            <form name="makeReportForm" novalidate="" ng-submit="reportCtrl.submit(makeReportForm)">
+                <div class="list" style="margin-top:50%;">
+                    <label class="item item-input"
+                           ng-class="{'has-error': makeReportForm.mobileNumber.$invalid && reportCtrl.isSubmit}">
+                        <div class="input-label">
+                            Mobile No.
+                        </div>
+                        <input type="tel" name="mobileNumber" ng-model="reportCtrl.report.mobileNumber"
+                               placeholder="Your mobile no." required
+                               ng-pattern="/(024|054|026|027|020|050|023)[0-9]{7}/"/>
+                    </label>
+                    <div class="form-errors" ng-messages="makeReportForm.mobileNumber.$error"
+                         ng-messages-include="templates/form_errors.html" ng-show="reportCtrl.isSubmit">
+                        <div class="form-error" ng-message="pattern">A valid phone number is required!</div>
+                    </div>
+
+                    <label class="item item-input item-select"
+                           ng-class="{'has-error': makeReportForm.location.$invalid && reportCtrl.isSubmit}">
+                        <div class="input-label">
+                            Location
+                        </div>
+                        <select name="location" ng-model="reportCtrl.report.location"
+                                ng-options="loc for loc in reportCtrl.zones" required>
+                        </select>
+                    </label>
+
+                    <div class="form-errors" ng-messages="makeReportForm.location.$error"
+                         ng-messages-include="templates/form_errors.html" ng-show="reportCtrl.isSubmit">
+                    </div>
+                    <button class="button button-block make-report-button">
+                        <span ng-hide="reportCtrl.isSubmitting">Submit Report</span>
+                        <span ng-show="reportCtrl.isSubmitting">Processing...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </ion-content>
+</ion-view>
