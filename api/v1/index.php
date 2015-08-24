@@ -272,6 +272,8 @@ $app->delete('/alerts/:id', 'authenticate', function($alert_id) use($app) {
             echoRespnse(200, $response);
         });
 
+require_once '../include/CompaniesEndpoint.php';
+
 /**
  * Verifying required params posted or not
  */
