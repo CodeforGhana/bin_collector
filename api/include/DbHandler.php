@@ -317,6 +317,100 @@ class DbHandler {
         return $result;
     }
 
+
+    /* ------------- `companies` table method ------------------ */
+
+
+    /**
+     * Fetching all companies
+     */
+    public function getCompanies() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM companies t");
+        $stmt->execute();
+        $companies = $stmt->get_result();
+        $stmt->close();
+        return $companies;
+    }
+
+
+    /**
+     * Creating new company
+     */
+    public function createCompany($company) {
+        $stmt = $this->conn->prepare("INSERT INTO companies(name) VALUES(?)");
+        $stmt->bind_param("s", $company);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        if ($result) {
+            // company row created
+            $res = $this->conn->insert_id;
+            if ($res) {
+                // company created successfully
+                return $res;
+            } else {
+                // company failed to create
+                return NULL;
+            }
+        } else {
+            // company failed to create
+            return NULL;
+        }
+    }
+
+    /**
+     * Fetching single company
+     * @param String $id id of the company
+     */
+    public function getCompany($id) {
+        $stmt = $this->conn->prepare("SELECT t.id, t.name, t.status, t.created_at from companies t, WHERE t.id = ? ");
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $res = array();
+            $stmt->bind_result($company_id, $name, $status, $created_at);
+            
+            $stmt->fetch();
+            $res["id"] = $company_id;
+            $res["name"] = $name;
+            $res["status"] = $status;
+            $res["created_at"] = $created_at;
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
+
+    
+    /**
+     * Updating company
+     * @param String $company_id id of the alert
+     * @param String $name company name
+     * @param String $status company status
+     */
+    public function updateCompany($company_id,$name,$status) {
+        $stmt = $this->conn->prepare("UPDATE companies t, set t.name = ?, t.status = ? WHERE t.id = ? ");
+        $stmt->bind_param("siii", $name, $status, $company_id);
+        $stmt->execute();
+        $num_affected_rows = $stmt->affected_rows;
+        $stmt->close();
+        return $num_affected_rows > 0;
+    }
+
+    /**
+     * Deleting a company
+     * @param String $company_id id of the company to delete
+     */
+    public function deleteCompany($company_id) {
+        $stmt = $this->conn->prepare("DELETE t FROM alerts t WHERE t.id = ? ");
+        $stmt->bind_param("i", $company_id);
+        $stmt->execute();
+        $num_affected_rows = $stmt->affected_rows;
+        $stmt->close();
+        return $num_affected_rows > 0;
+    }
+
+
 }
 
 ?>

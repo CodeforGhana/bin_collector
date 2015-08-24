@@ -14,9 +14,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `phone` (`phone`)
 );
  
+ CREATE TABLE IF NOT EXISTS `companies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `alerts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `alert` text NOT NULL,
+  `alert` varchar(150) NOT NULL,
+  `companyId` varchar(150) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -24,14 +33,14 @@ CREATE TABLE IF NOT EXISTS `alerts` (
 
 CREATE TABLE IF NOT EXISTS `regions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text NOT NULL,
+  `name` varchar(150) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `locations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text NOT NULL,
+  `name` varchar(150) NOT NULL,
   `lng` decimal(9,6) NOT NULL,
   `lat` decimal(9,6) NOT NULL,
   `regionid` int(11) NOT NULL,
