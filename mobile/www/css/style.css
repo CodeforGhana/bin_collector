@@ -1,20 +1,42 @@
 /* Empty. Add your own CSS if you like */
-.app-header {
-    background-color: #222222;
+.app-header, .login-page {
+    background-color: #2b2f3e;
     color: #fff;
 }
-.app-content {
+.bar-bin {
+    background-color: #2b2f3e !important;
+    border: medium none !important;
+    color: #fff;
+    font-family: Open-Sans !important;
+}
+.button-log-in {
+    background: rgba(0, 0, 0, 0) linear-gradient(45deg, #ff256a 0%, #ff583b 100%) repeat scroll 0 0;
+    border: medium none !important;
+    color: white !important;
+    display: block !important;
+    font-family: Exo;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+.login-page .signup-link {
+    color: #fff;
+    text-decoration: none;
+}
+.login-page .signup-link:hover {
+    text-decoration: underline;
+}
+.app-content, .status-page {
     background-color: #e4e5e7;
 }
 .app-content .make-report-button {
     background-color: #007aff;
     color: #fff;
 }
-.status-page {
-    background-color: #4b8bf4;
-    color: #fff;
+.status-page .padding {
+    /*background-color: #ccc;*/
+    color: #333;
     font-size: 20px;
-    text-shadow: 1px 1px 2px #444;
+    text-shadow: 1px 1px 2px #fff;
 }
 .status-page p {
     line-height: 1.7em;
@@ -25,4 +47,7 @@
 .form-error {
     padding: 2px 0 2px 16px;
     color: red;
+}
+.ion-menu-link {
+    cursor: pointer;
 }

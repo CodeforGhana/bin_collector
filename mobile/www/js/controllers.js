@@ -5,14 +5,97 @@
     'use strict';
 
     angular.module('bin.controllers', [])
-        .controller('MakeReportCtrl', ['$http', 'binService', '$state',
-            function ($http, binService, $state) {
+        .controller('LoginCtrl', ['$http', '$scope', '$ionicModal', 'appConfig', '$state',
+            'userService',
+            function ($http, $scope, $ionicModal, appConfig, $state, userService) {
                 var self = this;
 
-                /* todo: Fetch zones from server */
-                self.zones = ['Zone 1', 'Zone 2', 'Zone 3', 'Zone 4'];
-                self.report = {mobileNumber: binService.getPhoneNumber(), location: self.zones[0]};
-                self.isSubmitting = false;
+                (function () {
+                    /* Register signup modal */
+                    $ionicModal.fromTemplateUrl('templates/signup-modal.html', {
+                        scope: $scope,
+                        animation: 'slide-in-up'
+                    }).then(function (modal) {
+                        self.signupModal = modal;
+                    });
+                })();
+
+                self.openLoginModal = function () {
+                    self.isLoginModal = true;
+                    self.signupModal.show();
+                };
+
+                self.closeModal = function () {
+                    self.user = {};
+                    self.isLoginModal = self.isSignupModal = false;
+                    self.httpStatus = '';
+                    self.isSubmit = self.isSubmitting = false;
+                    self.signupModal.hide();
+                };
+
+                self.openSignupModal = function () {
+                    self.isSignupModal = true;
+                    self.signupModal.show();
+                };
+
+                self.submit = function (theForm) {
+                    self.isSubmit = true;
+
+                    if (theForm.$valid) {
+                        self.isSubmitting = true;
+                        self.httpStatus = '';
+
+                        if (self.isLoginModal)
+                            login();
+                        else if (self.isSignupModal)
+                            signup();
+                    }
+                };
+
+                function signup() {
+                    userService.createAccount(self.user.phoneNumber, self.user.pin)
+                        .then(function (resp) {
+                            if (resp.wasSuccessful)
+                                $state.go('make_report');
+                            else
+                                self.httpStatus = resp.status;
+                        }, function () {
+                            self.httpStatus = 'Network error. Check your data settings and try again';
+                        })
+                        .finally(function () {
+                            self.isSubmitting = false;
+                        });
+                }
+
+                function login() {
+                    $http.post(appConfig.apiUrl + '/login', self.user)
+                        .success(function (resp) {
+                            if (resp.wasSuccessful)
+                                $state.go('make_report');
+                            else
+                                self.httpStatus = resp.status;
+                        })
+                        .error(function () {
+                            self.httpStatus = 'Network Error. Check your data settings and try again';
+                        })
+                        .finally(function () {
+                            self.isSubmitting = false;
+                        });
+                }
+            }
+        ])
+        .controller('MakeReportCtrl', ['$http', 'binService', '$state', 'userService',
+            function ($http, binService, $state, userService) {
+                var self = this;
+
+                (function() {
+                    binService.getCompanies().then(function(results) {
+                        self.companies = results;
+                    });
+                    self.companies = ['Zoomlion', 'Company 2', 'Company 3'];
+                    self.report = {mobileNumber: userService.getUsername(), company: self.companies[0]};
+                    self.isSubmitting = false;
+                })();
 
                 self.submit = function (makeForm) {
                     self.isSubmit = true;
@@ -25,7 +108,7 @@
                                 self.isSubmit = false;
                                 self.isSubmitting = false;
 
-                                $state.go('report_status');
+                                $state.go('menu.status');
                             });
                     }
                 };
@@ -35,7 +118,7 @@
             function (binService) {
                 var self = this;
 
-                (function() {
+                (function () {
                     self.status = binService.getReportStatus();
                 })();
             }

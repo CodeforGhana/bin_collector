@@ -38,15 +38,35 @@
 
     function defineRoutes($stateProvider, $urlRouterProvider) {
         $stateProvider
-            .state('make_report', {
-                url: '/report',
-                templateUrl: 'templates/make_report.html',
-                controller: 'MakeReportCtrl as reportCtrl'
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller: 'LoginCtrl as loginCtrl'
             })
-            .state('report_status', {
-                url: '/status',
-                templateUrl: 'templates/report_status.html',
-                controller: 'ReportStatusCtrl as statusCtrl'
+            .state('menu', {
+                url: '/app',
+                abstract: true,
+                templateUrl: 'templates/menu.html'
+            })
+            .state('menu.report', {
+                url: '^/report',
+                parent: 'menu',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/make_report.html',
+                        controller: 'MakeReportCtrl as reportCtrl'
+                    }
+                }
+            })
+            .state('menu.status', {
+                url: '^/status',
+                parent: 'menu',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'templates/report_status.html',
+                        controller: 'ReportStatusCtrl as statusCtrl'
+                    }
+                }
             });
 
         $urlRouterProvider.otherwise('/report');
