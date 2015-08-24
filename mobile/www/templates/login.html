@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+<ion-view view-title="" class="login-page">
+    <ion-content class="has-header">
+        <div class="padding">
+            <div class="logo-section row">
+                <div class="col col">
+                    <img src="./img/bin-logo3.png" style="width:100%"/>
+                </div>
+            </div>
+            <div class="list">
+                <button class="button button-block button-log-in" ng-click="loginCtrl.openLoginModal()">
+                    Log in
+                </button>
+                <p class="text-center">
+                    <a href class="signup-link" ng-click="loginCtrl.openSignupModal()">Create an account</a>
+                </p>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
