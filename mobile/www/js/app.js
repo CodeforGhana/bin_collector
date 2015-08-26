@@ -69,7 +69,7 @@
                 }
             });
 
-        $urlRouterProvider.otherwise('/report');
+        $urlRouterProvider.otherwise('/login');
     }
 
 })();
