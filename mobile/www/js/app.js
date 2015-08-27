@@ -51,6 +51,9 @@
         .config(['$stateProvider', '$urlRouterProvider',
             function ($stateProvider, $urlRouterProvider) {
             defineRoutes($stateProvider, $urlRouterProvider);
+        }])
+        .run(['routeAuthService', function(routeAuthService) {
+            routeAuthService.registerRouteChangeListener();
         }]);
 
     function defineRoutes($stateProvider, $urlRouterProvider) {
@@ -78,6 +81,9 @@
                         templateUrl: 'templates/make_report.html',
                         controller: 'MakeReportCtrl as reportCtrl'
                     }
+                },
+                data: {
+                    authenticated: true
                 }
             })
             .state('menu.status', {
@@ -90,6 +96,14 @@
                 }
             });
 
-        $urlRouterProvider.otherwise('/login');
+        $urlRouterProvider.otherwise(function($injector) {
+            var $state = $injector.get("$state");
+            var userService = $injector.get("userService");
+
+            if (!userService.isLoggedIn())
+                $state.go('login');
+            else
+                $state.go('menu.report');
+        });
     }
 })();

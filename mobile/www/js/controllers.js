@@ -91,7 +91,6 @@
 
                 self.username = username;
                 self.logout = function () {
-                    /* todo: log the user out */
                     userService.logout();
                     $state.go('login');
                 };
