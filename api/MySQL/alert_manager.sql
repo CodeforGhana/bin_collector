@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `alerts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `alert` varchar(150) NOT NULL,
-  `companyId` varchar(150) NOT NULL,
+  `companyId` int(11) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `user_alerts` (
   KEY `user_id` (`user_id`),
   KEY `alert_id` (`alert_id`)
 );
- 
+
 ALTER TABLE  `user_alerts` ADD FOREIGN KEY (  `user_id` ) REFERENCES  `alert_manager`.`users` (
 `id`
 ) ON DELETE CASCADE ON UPDATE CASCADE ;
@@ -65,3 +65,7 @@ ALTER TABLE  `user_alerts` ADD FOREIGN KEY (  `user_id` ) REFERENCES  `alert_man
 ALTER TABLE  `user_alerts` ADD FOREIGN KEY (  `alert_id` ) REFERENCES  `alert_manager`.`alerts` (
 `id`
 ) ON DELETE CASCADE ON UPDATE CASCADE ;
+ALTER TABLE `alerts` ADD FOREIGN KEY (`companyId`) REFERENCES `alert_manager`.`companies` (`id`)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO `alert_manager`.`companies` (`name`) VALUES ('Zoom Lion'), ('RLG Limited'), ('Subah Ghana');
