@@ -4,7 +4,7 @@
     angular.module('starter', [
         'ionic', 'bin.controllers', 'ngMessages', 'bin.services', 'angular-cache'
     ])
-        .constant('appConfig', {apiUrl: ''})
+        .constant('appConfig', {apiUrl: 'http://localhost/bin_collector/api/v1/'})
         .run(function ($ionicPlatform) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -23,6 +23,20 @@
                     $templateCache.put('errors_template', response.data);
                 })
         }])
+        .run(['$rootScope', 'userService', '$state', function($rootScope, userService, $state) {
+            $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+                //if (!toState.hasOwnProperty('data')) {
+                //    return;
+                //}
+                ///* Validate authenticated routes */
+                //if (toState.data.hasOwnProperty('authenticated')) {
+                //    if (!userService.isLoggedIn()) {
+                //        event.preventDefault();
+                //        $state.go('login')
+                //    }
+                //}
+            });
+        }])
         .config(function (CacheFactoryProvider) {
             /* Items expire after 1 month */
             angular.extend(CacheFactoryProvider.defaults, {
@@ -30,6 +44,9 @@
                 storageMode: 'localStorage'
             });
         })
+        .config(['$httpProvider', function($httpProvider) {
+            $httpProvider.defaults.headers.common["X_REQUESTED_WITH"] = 'XMLHttpRequest';
+        }])
         /* Register application routes */
         .config(['$stateProvider', '$urlRouterProvider',
             function ($stateProvider, $urlRouterProvider) {
@@ -46,11 +63,11 @@
             .state('menu', {
                 url: '/app',
                 abstract: true,
-                templateUrl: 'templates/menu.html'
+                templateUrl: 'templates/menu.html',
+                controller: 'MenuCtrl as menuCtrl'
             })
             .state('menu.report', {
                 url: '^/report',
-                parent: 'menu',
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/make_report.html',
@@ -60,7 +77,6 @@
             })
             .state('menu.status', {
                 url: '^/status',
-                parent: 'menu',
                 views: {
                     'menuContent': {
                         templateUrl: 'templates/report_status.html',
@@ -71,5 +87,4 @@
 
         $urlRouterProvider.otherwise('/login');
     }
-
 })();

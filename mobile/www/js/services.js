@@ -34,64 +34,98 @@
                 };
             }
         ])
-        .factory('userService', ['$http', '$q', 'appConfig', 'CacheFactory',
-            function ($http, $q, appConfig, CacheFactory) {
+        .factory('userService', ['$http', '$q', 'appConfig', 'CacheFactory', '$httpParamSerializerJQLike',
+            function ($http, $q, appConfig, CacheFactory, $httpParamSerializerJQLike) {
                 var userCache, cacheKeys;
                 (function () {
                     if (!CacheFactory.get('userCache')) {
                         userCache = CacheFactory('userCache');
-                        cacheKeys = {'phone': 'phoneNumber'};
+                        cacheKeys = {'userPhone': 'phoneNumber', 'apiKey': 'userKey', 'userName': 'userName'};
                     }
                 })();
+
+                function cacheUserInfo(phone, apiKey, name) {
+                    userCache.put(cacheKeys.userPhone, phone);
+                    userCache.put(cacheKeys.apiKey, apiKey);
+                    userCache.put(cacheKeys.userName, name);
+                }
+
+                function clearCache() {
+
+                }
+
+                function isLoggedIn(user) {
+                    return userCache.get(cacheKeys.userPhone) == user.phone && userCache.get(cacheKeys.apiKey);
+                }
+
                 return {
-                    createAccount: function (phone, pin) {
+                    createAccount: function (user) {
                         var deferred;
                         deferred = $q.defer();
 
-                        $http.post(appConfig.apiUrl + '/signup', {'phoneNumber': phone, 'pin': pin})
-                            .success(function (resp) {
-                                /* Log the user in automatically */
-                                if (resp.wasSuccessful)
-                                    userCache.put(cacheKeys.phone, phone);
+                        $http({
+                            url: appConfig.apiUrl + 'register',
+                            method: 'POST',
+                            data: $httpParamSerializerJQLike(user),
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                        }).success(function (resp) {
+                            /* Log the user in automatically */
+                            if (!resp.error) {
+                                cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
+                            }
+                            deferred.resolve(resp);
+                        }).error(function (httpResp) {
+                            deferred.reject(httpResp);
+                        });
+
+                        return deferred.promise;
+                    },
+                    login: function (user) {
+                        var deferred;
+                        deferred = $q.defer();
+
+                        if (isLoggedIn(user))
+                            deferred.resolve({error: false});
+                        else {
+                            $http({
+                                url: appConfig.apiUrl + 'login',
+                                method: 'POST',
+                                data: $httpParamSerializerJQLike(user),
+                                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                            }).success(function (resp) {
+                                if (!resp.error) {
+                                    cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
+                                }
                                 deferred.resolve(resp);
-                            })
-                            .error(function (httpResp) {
+                            }).error(function (httpResp) {
                                 deferred.reject(httpResp);
                             });
-
-                        return deferred.promise;
-                    },
-                    login: function (phone, pin) {
-                        var deferred;
-                        deferred = $q.defer();
-
-                        if (userCache.get(cacheKeys.phone) == phone)
-                            deferred.resolve('Login Successful');
-                        else {
-                            $http.post(appConfig.apiUrl + '/login', {'phoneNumber': phone, 'pin': pin})
-                                .success(function (resp) {
-                                    if (resp.wasSuccessful)
-                                        userCache.put(cacheKeys.phone, phone);
-                                    deferred.resolve(resp);
-                                })
-                                .error(function (httpResp) {
-                                    deferred.reject(httpResp);
-                                });
                         }
 
                         return deferred.promise;
                     },
-                    getUsername: function() {
-                        if (userCache.get(cacheKeys.phone)) {
-                            return userCache.get(cacheKeys.phone);
+                    getUsername: function () {
+                        if (userCache.get(cacheKeys.userName)) {
+                            return userCache.get(cacheKeys.userName);
                         }
                         return '';
+                    },
+                    isLoggedIn: function () {
+                        if (userCache.get(cacheKeys.apiKey))
+                            return true;
+                        return false;
+                    },
+                    logout: function () {
+                        clearCache();
+                    },
+                    getApiKey: function () {
+                        return userCache.get(cacheKeys.apiKey);
                     }
                 }
             }
         ])
-        .factory('binService', ['$http', '$q', 'appConfig', 'CacheFactory', 'dateDiffService',
-            function ($http, $q, appConfig, CacheFactory, dateDiffService) {
+        .factory('binService', ['$http', '$q', 'appConfig', 'CacheFactory', 'dateDiffService', 'userService',
+            function ($http, $q, appConfig, CacheFactory, dateDiffService, userService) {
                 var reportStatus, binCache, tempCache, binKeys;
 
                 (function () {
@@ -173,7 +207,7 @@
                         return reportStatus;
                     },
                     getZones: function () {
-                        var deferred, key = appConfig.apiUrl + '/zones';
+                        var deferred, key = appConfig.apiUrl + 'zones';
                         deferred = $q.defer();
 
                         if (tempCache.get(key)) {
@@ -191,21 +225,23 @@
 
                         return deferred.promise;
                     },
-                    getCompanies: function() {
-                        var deferred, key = appConfig.apiUrl + '/companies';
+                    getCompanies: function () {
+                        var deferred, key = appConfig.apiUrl + 'companies';
                         deferred = $q.defer();
 
                         if (tempCache.get(key)) {
                             deferred.resolve(tempCache.get(key));
                         } else {
-                            $http.get(key)
-                                .success(function (response) {
-                                    tempCache.put(key, response);
-                                    deferred.resolve(response);
-                                })
-                                .error(function (resp) {
-                                    deferred.reject(resp)
-                                });
+                            $http({
+                                url: key,
+                                method: 'GET',
+                                headers: {'Authorization': userService.getApiKey()}
+                            }).success(function (response) {
+                                tempCache.put(key, response);
+                                deferred.resolve(response);
+                            }).error(function (resp) {
+                                deferred.reject(resp);
+                            });
                         }
 
                         return deferred.promise;

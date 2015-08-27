@@ -5,27 +5,51 @@
     </ion-header-bar>
     <ion-content class="padding">
         <form name="signupForm" novalidate="" ng-submit="loginCtrl.submit(signupForm)">
+            <p ng-show="loginCtrl.httpStatus">{{loginCtrl.httpStatus}}</p>
             <ion-list class="list-inset">
+                <!-- Name field -->
+                <ion-item class="item-input" ng-if="loginCtrl.isSignupModal"
+                          ng-class="{'has-error': (signupForm.uname.$dirty || loginCtrl.isSubmit) && signupForm.uname.$invalid}">
+                    <!-- Name field for signup -->
+                    <input type="tel" name="uname" ng-model="loginCtrl.user.name" required
+                           placeholder="Your fullname" ng-if="loginCtrl.isSignupModal">
+                </ion-item>
+                <div class="form-errors" ng-messages="signupForm.uname.$error"
+                     ng-messages-include="templates/form_errors.html"
+                     ng-show="loginCtrl.isSubmit || signupForm.uname.$dirty">
+                </div>
+                <!-- Phone number field -->
                 <ion-item class="item-input"
                           ng-class="{'has-error': (signupForm.phone.$dirty || loginCtrl.isSubmit) && signupForm.phone.$invalid}">
-                    <input type="tel" name="phone" ng-model="loginCtrl.user.phoneNumber" placeholder="Your phone number"
+                    <!-- Phone field for signup -->
+                    <input type="tel" name="phone" ng-model="loginCtrl.user.phone"
+                           placeholder="Your phone number" ng-if="loginCtrl.isSignupModal"
                            required ng-pattern="/(024|054|026|027|020|050|023)[0-9]{7}/">
+                    <!-- Phone field for login -->
+                    <input type="tel" name="phone" ng-model="loginCtrl.user.phone"
+                           placeholder="Your phone number" ng-if="loginCtrl.isLoginModal" required>
                 </ion-item>
                 <div class="form-errors" ng-messages="signupForm.phone.$error"
                      ng-messages-include="templates/form_errors.html"
                      ng-show="loginCtrl.isSubmit || signupForm.phone.$dirty">
                     <div class="form-error" ng-message="pattern">A valid phone number is required!</div>
                 </div>
+                <!-- Password field -->
                 <ion-item class="item-input"
                           ng-class="{'has-error': signupForm.pin.$invalid && (loginCtrl.isSubmit || signupForm.pin.$dirty)}">
-                    <input type="password" name="pin" ng-model="loginCtrl.user.pin" placeholder="Your secret pin"
-                           required minlength="6">
+                    <!-- Signup password field -->
+                    <input type="password" name="pin" ng-model="loginCtrl.user.password" placeholder="Your secret pin/password"
+                           required minlength="6" ng-if="loginCtrl.isSignupModal">
+                    <!-- Login password field -->
+                    <input type="password" name="pin" ng-model="loginCtrl.user.password" placeholder="Your secret pin/password"
+                           required ng-if="loginCtrl.isLoginModal">
                 </ion-item>
                 <div class="form-errors" ng-messages="signupForm.pin.$error"
                      ng-messages-include="templates/form_errors.html"
                      ng-show="loginCtrl.isSubmit || signupForm.pin.$dirty">
                     <div class="form-error" ng-message="minlength">Secret pin must be at least 6 characters long!</div>
                 </div>
+                <!-- Submit button -->
                 <button class="button button-block button-log-in" ng-disabled="loginCtrl.isCreatingAccount">
                     <span ng-hide="loginCtrl.isSubmitting">
                         {{loginCtrl.isLoginModal ? 'Log In' : 'Create Account'}}

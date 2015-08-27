@@ -53,12 +53,13 @@
                 };
 
                 function signup() {
-                    userService.createAccount(self.user.phoneNumber, self.user.pin)
+                    userService.createAccount(self.user)
                         .then(function (resp) {
-                            if (resp.wasSuccessful)
-                                $state.go('make_report');
-                            else
-                                self.httpStatus = resp.status;
+                            if (!resp.error) {
+                                self.closeModal();
+                                $state.go('menu.report');
+                            } else
+                                self.httpStatus = resp.message;
                         }, function () {
                             self.httpStatus = 'Network error. Check your data settings and try again';
                         })
@@ -68,32 +69,41 @@
                 }
 
                 function login() {
-                    $http.post(appConfig.apiUrl + '/login', self.user)
-                        .success(function (resp) {
-                            if (resp.wasSuccessful)
-                                $state.go('make_report');
-                            else
-                                self.httpStatus = resp.status;
+                    userService.login(self.user)
+                        .then(function (resp) {
+                            if (!resp.error) {
+                                self.closeModal();
+                                $state.go('menu.report')
+                            } else
+                                self.httpStatus = resp.message;
+                        }, function () {
+                            self.httpStatus = 'Network error. Check your data settings and try again';
                         })
-                        .error(function () {
-                            self.httpStatus = 'Network Error. Check your data settings and try again';
-                        })
-                        .finally(function () {
+                        .finally(function() {
                             self.isSubmitting = false;
                         });
                 }
             }
         ])
+        .controller('MenuCtrl', ['$http', '$state', 'userService', function($http, $state, userService) {
+            var self = this;
+
+            self.logout = function() {
+                /* todo: log the user out */
+                userService.logout();
+                $state.go('login');
+            };
+        }])
         .controller('MakeReportCtrl', ['$http', 'binService', '$state', 'userService',
             function ($http, binService, $state, userService) {
                 var self = this;
 
-                (function() {
-                    binService.getCompanies().then(function(results) {
+                (function () {
+                    binService.getCompanies().then(function (results) {
                         self.companies = results;
+                        self.report = {mobileNumber: userService.getUsername(), company: self.companies[0]};
                     });
-                    self.companies = ['Zoomlion', 'Company 2', 'Company 3'];
-                    self.report = {mobileNumber: userService.getUsername(), company: self.companies[0]};
+
                     self.isSubmitting = false;
                 })();
 
