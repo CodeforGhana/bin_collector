@@ -115,7 +115,7 @@
                     if (makeForm.$valid) {
                         self.isSubmitting = true;
 
-                        binService.submitReport(self.report)
+                        binService.submitReport({companyId: self.report.company.id})
                             .finally(function () {
                                 self.isSubmit = false;
                                 self.isSubmitting = false;

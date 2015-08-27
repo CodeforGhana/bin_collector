@@ -147,8 +147,9 @@
                 }
             }
         ])
-        .factory('binService', ['$http', '$q', 'appConfig', 'CacheFactory', 'dateDiffService', 'userService',
-            function ($http, $q, appConfig, CacheFactory, dateDiffService, userService) {
+        .factory('binService', ['$http', '$q', 'appConfig', 'CacheFactory', 'dateDiffService',
+            'userService', '$httpParamSerializerJQLike',
+            function ($http, $q, appConfig, CacheFactory, dateDiffService, userService, $httpParamSerializerJQLike) {
                 var reportStatus, binCache, tempCache, binKeys;
 
                 (function () {
@@ -167,15 +168,24 @@
                         var deferred;
                         deferred = $q.defer();
 
-                        $http.post(appConfig.apiUrl + 'report', data)
-                            .success(function (resp) {
-                                reportStatus = 'Your report was successfully submitted';
-                                deferred.resolve(resp);
-                            })
-                            .error(function (httpResp) {
-                                reportStatus = 'Sorry! The report was not submitted. Please try again';
-                                deferred.reject(httpResp);
-                            });
+                        $http({
+                            url: appConfig.apiUrl + "alerts",
+                            method: 'POST',
+                            data: $httpParamSerializerJQLike(data),
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Authorization': userService.getApiKey()
+                            }
+                        }).success(function (resp) {
+                            if (!resp.error)
+                                reportStatus = 'Your bin collection report was successfully sent. Thank you';
+                            else
+                                reportStatus = 'Sorry! Your report was not saved. Please try again';
+                            deferred.resolve(resp);
+                        }).error(function (httpResp) {
+                            reportStatus = 'Sorry! The report was not submitted. Please try again';
+                            deferred.reject(httpResp);
+                        });
 
                         return deferred.promise;
                     },
