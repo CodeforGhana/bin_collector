@@ -34,6 +34,27 @@
                 };
             }
         ])
+        .factory('routeAuthService', ['$rootScope', '$state', 'userService',
+            function ($rootScope, $state, userService) {
+                function isAuthRoute(toState) {
+                    return toState.hasOwnProperty('data') && toState.data.hasOwnProperty('authenticated') &&
+                        toState.data.authenticated;
+                }
+
+                return {
+                    registerRouteChangeListener: function () {
+                        /* Register a route change listener */
+                        $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+                            if (isAuthRoute(toState) && !userService.isLoggedIn()) {
+                                event.preventDefault();
+                                $state.go('login');
+                            }
+                            return;
+                        });
+                    }
+                }
+            }
+        ])
         .factory('userService', ['$http', '$q', 'appConfig', 'CacheFactory', '$httpParamSerializerJQLike',
             function ($http, $q, appConfig, CacheFactory, $httpParamSerializerJQLike) {
                 var userCache, cacheKeys;
