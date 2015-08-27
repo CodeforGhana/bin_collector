@@ -247,19 +247,21 @@
                         return deferred.promise;
                     },
                     getCompanies: function () {
-                        var deferred, key = appConfig.apiUrl + 'companies';
+                        var deferred, key, results;
+                        key = appConfig.apiUrl + 'companies';
                         deferred = $q.defer();
+                        results = tempCache.get(key);
 
-                        if (tempCache.get(key)) {
-                            deferred.resolve(tempCache.get(key));
+                        if (angular.isArray(results) && results.length > 0) {
+                            deferred.resolve(results);
                         } else {
                             $http({
                                 url: key,
                                 method: 'GET',
                                 headers: {'Authorization': userService.getApiKey()}
                             }).success(function (response) {
-                                tempCache.put(key, response);
-                                deferred.resolve(response);
+                                tempCache.put(key, response.companies);
+                                deferred.resolve(response.companies);
                             }).error(function (resp) {
                                 deferred.reject(resp);
                             });

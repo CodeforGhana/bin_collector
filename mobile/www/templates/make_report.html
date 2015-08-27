@@ -9,7 +9,7 @@
                             Company
                         </div>
                         <select name="company" ng-model="reportCtrl.report.company"
-                                ng-options="rec for rec in reportCtrl.companies" required>
+                                ng-options="rec.name for rec in reportCtrl.companies" required>
                         </select>
                     </label>
 

@@ -23,20 +23,6 @@
                     $templateCache.put('errors_template', response.data);
                 })
         }])
-        .run(['$rootScope', 'userService', '$state', function($rootScope, userService, $state) {
-            $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
-                //if (!toState.hasOwnProperty('data')) {
-                //    return;
-                //}
-                ///* Validate authenticated routes */
-                //if (toState.data.hasOwnProperty('authenticated')) {
-                //    if (!userService.isLoggedIn()) {
-                //        event.preventDefault();
-                //        $state.go('login')
-                //    }
-                //}
-            });
-        }])
         .config(function (CacheFactoryProvider) {
             /* Items expire after 1 month */
             angular.extend(CacheFactoryProvider.defaults, {
