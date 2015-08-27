@@ -207,11 +207,13 @@ class DbHandler {
     /**
      * Creating new alert
      * @param String $user_id user id to whom alert belongs to
+     * @param Integer $company_id
      * @param String $alert alert text
+     * @return
      */
-    public function createalert($user_id, $alert) {
-        $stmt = $this->conn->prepare("INSERT INTO alerts(alert) VALUES(?)");
-        $stmt->bind_param("s", $alert);
+    public function createalert($user_id, $company_id, $alert = "Bin not collected") {
+        $stmt = $this->conn->prepare("INSERT INTO alerts(alert, companyId) VALUES(?, ?)");
+        $stmt->bind_param("si", $alert, $company_id);
         $result = $stmt->execute();
         $stmt->close();
 
