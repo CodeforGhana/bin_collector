@@ -1,5 +1,6 @@
 <?php
 
+require_once '../include/Cors.php';
 require_once '../include/DbHandler.php';
 require_once '../include/PassHash.php';
 require '.././libs/Slim/Slim.php';
@@ -72,11 +73,18 @@ $app->post('/register', function() use ($app) {
             $res = $db->createUser($name, $phone, $password);
 
             if ($res == USER_CREATED_SUCCESSFULLY) {
+                $user = $db->getUserByPhone($phone);
                 $response["error"] = false;
                 $response["message"] = "You are successfully registered";
+
+                if (!is_null($user)) {
+                    $response["name"] = $user["name"];
+                    $response["phone"] = $user["phone"];
+                    $response["apiKey"] = $user["api_key"];
+                }
             } else if ($res == USER_CREATE_FAILED) {
                 $response["error"] = true;
-                $response["message"] = "Oops! An error occurred while registereing";
+                $response["message"] = "Oops! An error occurred while registering";
             } else if ($res == USER_ALREADY_EXISTED) {
                 $response["error"] = true;
                 $response["message"] = "Sorry, this phone already existed";
@@ -95,10 +103,9 @@ $app->post('/login', function() use ($app) {
             // check for required params
             verifyRequiredParams(array('phone', 'password'));
 
-            // reading post params
             $phone = $app->request()->post('phone');
             $password = $app->request()->post('password');
-            $response = array();
+            $response = array('fields' => [$phone, $password]);
 
             $db = new DbHandler();
             // check for correct phone and password
@@ -281,6 +288,11 @@ function verifyRequiredParams($required_fields) {
     $error = false;
     $error_fields = "";
     $request_params = array();
+
+    $json_params = (array) json_decode(file_get_contents("php://input"));
+    if (count($_REQUEST) <= 0 && count($json_params) > 0) {
+        $_REQUEST = $json_params;
+    }
     $request_params = $_REQUEST;
     // Handling PUT request params
     if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
