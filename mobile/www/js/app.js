@@ -64,7 +64,12 @@
                 url: '/app',
                 abstract: true,
                 templateUrl: 'templates/menu.html',
-                controller: 'MenuCtrl as menuCtrl'
+                controller: 'MenuCtrl as menuCtrl',
+                resolve: {
+                    username: ['userService', function(userService) {
+                        return userService.getUsername();
+                    }]
+                }
             })
             .state('menu.report', {
                 url: '^/report',

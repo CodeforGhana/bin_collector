@@ -79,21 +79,24 @@
                         }, function () {
                             self.httpStatus = 'Network error. Check your data settings and try again';
                         })
-                        .finally(function() {
+                        .finally(function () {
                             self.isSubmitting = false;
                         });
                 }
             }
         ])
-        .controller('MenuCtrl', ['$http', '$state', 'userService', function($http, $state, userService) {
-            var self = this;
+        .controller('MenuCtrl', ['$http', '$state', 'userService', 'username',
+            function ($http, $state, userService, username) {
+                var self = this;
 
-            self.logout = function() {
-                /* todo: log the user out */
-                userService.logout();
-                $state.go('login');
-            };
-        }])
+                self.username = username;
+                self.logout = function () {
+                    /* todo: log the user out */
+                    userService.logout();
+                    $state.go('login');
+                };
+            }
+        ])
         .controller('MakeReportCtrl', ['$http', 'binService', '$state', 'userService',
             function ($http, binService, $state, userService) {
                 var self = this;

@@ -14,7 +14,10 @@
 
     <ion-side-menu side="left">
         <ion-header-bar class="bar-assertive">
-            <h1 class="title">Lanmma Menu</h1>
+            <h1 class="title">
+                <span ng-if="menuCtrl.username" style="text-transform: capitalize">Welcome, {{menuCtrl.username}}</span>
+                <span ng-if="!menuCtrl.username">Lanmma Menu</span>
+            </h1>
         </ion-header-bar>
         <ion-content>
             <ion-list>
