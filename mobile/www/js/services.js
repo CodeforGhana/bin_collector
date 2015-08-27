@@ -126,8 +126,10 @@
                         return deferred.promise;
                     },
                     getUsername: function () {
+                        var names;
                         if (userCache.get(cacheKeys.userName)) {
-                            return userCache.get(cacheKeys.userName);
+                            names = (userCache.get(cacheKeys.userName)).split(" ");
+                            return angular.isArray(names) && names.length > 0 ? names[0] : "";
                         }
                         return '';
                     },
@@ -160,53 +162,6 @@
                     binKeys = {'reports': 'reports', 'phone': 'binPhone', 'zone': 'binZone', 'binDate': 'binDate'};
                 })();
 
-                function cacheReport(data) {
-                    var reports = [];
-
-                    if (binCache.get(binKeys.reports)) {
-                        reports = binCache.get(binKeys.reports);
-                    }
-
-                    reports.push({
-                        'binPhone': data.mobileNumber,
-                        'binZone': data.location,
-                        'binDate': new Date()
-                    });
-                    binCache.put(binKeys.reports, reports);
-                }
-
-                function canSubmitReport(data) {
-                    /**
-                     *  A user can make reports with up to 3 different numbers.
-                     *  A given phone number can only be used to make 1 report each week
-                     */
-                    var reports, repDate, curDate, rec;
-
-                    reports = binCache.get(binKeys.reports);
-                    curDate = new Date();
-
-                    if (!angular.isArray(reports) || reports.length <= 0)
-                        return true;
-
-                    for (var i = 0; i < reports.length; ++i) {
-                        rec = reports[i];
-                        repDate = new Date(rec[binKeys.binDate]);
-
-                        if (rec[binKeys.phone] == data.mobileNumber && dateDiffService.inDays(curDate, repDate) < 7) {
-                            reportStatus = 'Sorry! Only one report allowed per mobile number';
-                            return false;
-                        }
-                    }
-
-                    /* 3 different phone numbers have already been used */
-                    if (reports.length == 3) {
-                        reportStatus = 'Sorry! Only a maximum of 3 phone numbers per mobile device';
-                        return false;
-                    }
-
-                    return true;
-                }
-
                 return {
                     submitReport: function (data) {
                         var deferred;
@@ -226,25 +181,6 @@
                     },
                     getReportStatus: function () {
                         return reportStatus;
-                    },
-                    getZones: function () {
-                        var deferred, key = appConfig.apiUrl + 'zones';
-                        deferred = $q.defer();
-
-                        if (tempCache.get(key)) {
-                            deferred.resolve(tempCache.get(key));
-                        } else {
-                            $http.get(key)
-                                .success(function (response) {
-                                    tempCache.put(key, response);
-                                    deferred.resolve(response);
-                                })
-                                .error(function (resp) {
-                                    deferred.reject(resp)
-                                });
-                        }
-
-                        return deferred.promise;
                     },
                     getCompanies: function () {
                         var deferred, key, results;
