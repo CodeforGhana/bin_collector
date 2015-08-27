@@ -16,7 +16,8 @@ $user_id = NULL;
  * Adding Middle Layer to authenticate every request
  * Checking if the request has valid api key in the 'Authorization' header
  */
-function authenticate(\Slim\Route $route) {
+function authenticate(\Slim\Route $route)
+{
     // Getting request headers
     $headers = apache_request_headers();
     $response = array();
@@ -58,40 +59,40 @@ function authenticate(\Slim\Route $route) {
  * method - POST
  * params - name, phone, password
  */
-$app->post('/register', function() use ($app) {
-            // check for required params
-            verifyRequiredParams(array('name', 'phone', 'password'));
+$app->post('/register', function () use ($app) {
+    // check for required params
+    verifyRequiredParams(array('name', 'phone', 'password'));
 
-            $response = array();
+    $response = array();
 
-            // reading post params
-            $name = $app->request->post('name');
-            $phone = $app->request->post('phone');
-            $password = $app->request->post('password');
+    // reading post params
+    $name = $app->request->post('name');
+    $phone = $app->request->post('phone');
+    $password = $app->request->post('password');
 
-            $db = new DbHandler();
-            $res = $db->createUser($name, $phone, $password);
+    $db = new DbHandler();
+    $res = $db->createUser($name, $phone, $password);
 
-            if ($res == USER_CREATED_SUCCESSFULLY) {
-                $user = $db->getUserByPhone($phone);
-                $response["error"] = false;
-                $response["message"] = "You are successfully registered";
+    if ($res == USER_CREATED_SUCCESSFULLY) {
+        $user = $db->getUserByPhone($phone);
+        $response["error"] = false;
+        $response["message"] = "You are successfully registered";
 
-                if (!is_null($user)) {
-                    $response["name"] = $user["name"];
-                    $response["phone"] = $user["phone"];
-                    $response["apiKey"] = $user["api_key"];
-                }
-            } else if ($res == USER_CREATE_FAILED) {
-                $response["error"] = true;
-                $response["message"] = "Oops! An error occurred while registering";
-            } else if ($res == USER_ALREADY_EXISTED) {
-                $response["error"] = true;
-                $response["message"] = "Sorry, this phone already existed";
-            }
-            // echo json response
-            echoRespnse(201, $response);
-        });
+        if (!is_null($user)) {
+            $response["name"] = $user["name"];
+            $response["phone"] = $user["phone"];
+            $response["apiKey"] = $user["api_key"];
+        }
+    } else if ($res == USER_CREATE_FAILED) {
+        $response["error"] = true;
+        $response["message"] = "Oops! An error occurred while registering";
+    } else if ($res == USER_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this phone already existed";
+    }
+    // echo json response
+    echoRespnse(201, $response);
+});
 
 /**
  * User Login
@@ -99,39 +100,39 @@ $app->post('/register', function() use ($app) {
  * method - POST
  * params - phone, password
  */
-$app->post('/login', function() use ($app) {
-            // check for required params
-            verifyRequiredParams(array('phone', 'password'));
+$app->post('/login', function () use ($app) {
+    // check for required params
+    verifyRequiredParams(array('phone', 'password'));
 
-            $phone = $app->request()->post('phone');
-            $password = $app->request()->post('password');
-            $response = array('fields' => [$phone, $password]);
+    $phone = $app->request()->post('phone');
+    $password = $app->request()->post('password');
+    $response = array('fields' => [$phone, $password]);
 
-            $db = new DbHandler();
-            // check for correct phone and password
-            if ($db->checkLogin($phone, $password)) {
-                // get the user by phone
-                $user = $db->getUserByPhone($phone);
+    $db = new DbHandler();
+    // check for correct phone and password
+    if ($db->checkLogin($phone, $password)) {
+        // get the user by phone
+        $user = $db->getUserByPhone($phone);
 
-                if ($user != NULL) {
-                    $response["error"] = false;
-                    $response['name'] = $user['name'];
-                    $response['phone'] = $user['phone'];
-                    $response['apiKey'] = $user['api_key'];
-                    $response['createdAt'] = $user['created_at'];
-                } else {
-                    // unknown error occurred
-                    $response['error'] = true;
-                    $response['message'] = "An error occurred. Please try again";
-                }
-            } else {
-                // user credentials are wrong
-                $response['error'] = true;
-                $response['message'] = 'Login failed. Incorrect credentials';
-            }
+        if ($user != NULL) {
+            $response["error"] = false;
+            $response['name'] = $user['name'];
+            $response['phone'] = $user['phone'];
+            $response['apiKey'] = $user['api_key'];
+            $response['createdAt'] = $user['created_at'];
+        } else {
+            // unknown error occurred
+            $response['error'] = true;
+            $response['message'] = "An error occurred. Please try again";
+        }
+    } else {
+        // user credentials are wrong
+        $response['error'] = true;
+        $response['message'] = 'Login failed. Incorrect credentials';
+    }
 
-            echoRespnse(200, $response);
-        });
+    echoRespnse(200, $response);
+});
 
 /*
  * ------------------------ METHODS WITH AUTHENTICATION ------------------------
@@ -140,31 +141,31 @@ $app->post('/login', function() use ($app) {
 /**
  * Listing all alerts of particual user
  * method GET
- * url /alerts          
+ * url /alerts
  */
-$app->get('/alerts', 'authenticate', function() {
-            global $user_id;
-            $response = array();
-            $db = new DbHandler();
+$app->get('/alerts', 'authenticate', function () {
+    global $user_id;
+    $response = array();
+    $db = new DbHandler();
 
-            // fetching all user alerts
-            $result = $db->getAllUseralerts($user_id);
+    // fetching all user alerts
+    $result = $db->getAllUseralerts($user_id);
 
-            $response["error"] = false;
-            $response["alerts"] = array();
+    $response["error"] = false;
+    $response["alerts"] = array();
 
-            // looping through result and preparing alerts array
-            while ($alert = $result->fetch_assoc()) {
-                $tmp = array();
-                $tmp["id"] = $alert["id"];
-                $tmp["alert"] = $alert["alert"];
-                $tmp["status"] = $alert["status"];
-                $tmp["createdAt"] = $alert["created_at"];
-                array_push($response["alerts"], $tmp);
-            }
+    // looping through result and preparing alerts array
+    while ($alert = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["id"] = $alert["id"];
+        $tmp["alert"] = $alert["alert"];
+        $tmp["status"] = $alert["status"];
+        $tmp["createdAt"] = $alert["created_at"];
+        array_push($response["alerts"], $tmp);
+    }
 
-            echoRespnse(200, $response);
-        });
+    echoRespnse(200, $response);
+});
 
 /**
  * Listing single alert of particual user
@@ -172,27 +173,27 @@ $app->get('/alerts', 'authenticate', function() {
  * url /alerts/:id
  * Will return 404 if the alert doesn't belongs to user
  */
-$app->get('/alerts/:id', 'authenticate', function($alert_id) {
-            global $user_id;
-            $response = array();
-            $db = new DbHandler();
+$app->get('/alerts/:id', 'authenticate', function ($alert_id) {
+    global $user_id;
+    $response = array();
+    $db = new DbHandler();
 
-            // fetch alert
-            $result = $db->getalert($alert_id, $user_id);
+    // fetch alert
+    $result = $db->getalert($alert_id, $user_id);
 
-            if ($result != NULL) {
-                $response["error"] = false;
-                $response["id"] = $result["id"];
-                $response["alert"] = $result["alert"];
-                $response["status"] = $result["status"];
-                $response["createdAt"] = $result["created_at"];
-                echoRespnse(200, $response);
-            } else {
-                $response["error"] = true;
-                $response["message"] = "The requested resource doesn't exists";
-                echoRespnse(404, $response);
-            }
-        });
+    if ($result != NULL) {
+        $response["error"] = false;
+        $response["id"] = $result["id"];
+        $response["alert"] = $result["alert"];
+        $response["status"] = $result["status"];
+        $response["createdAt"] = $result["created_at"];
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
 
 /**
  * Creating new alert in db
@@ -200,30 +201,34 @@ $app->get('/alerts/:id', 'authenticate', function($alert_id) {
  * params - name
  * url - /alerts/
  */
-$app->post('/alerts', 'authenticate', function() use ($app) {
-            // check for required params
-            verifyRequiredParams(array('alert'));
+$app->post('/alerts', 'authenticate', function () use ($app) {
+    // check for required params
+    verifyRequiredParams(array('companyId'));
 
-            $response = array();
-            $alert = $app->request->post('alert');
+    $response = array();
+    $companyId = (int)$app->request->post('companyId');
 
-            global $user_id;
-            $db = new DbHandler();
+    global $user_id;
+    $db = new DbHandler();
 
-            // creating new alert
-            $alert_id = $db->createalert($user_id, $alert);
+    // creating new alert
+    // todo: verify that user has not submitted a report recently before saving
+    if ($companyId > 0)
+        $alert_id = $db->createalert($user_id, $companyId);
+    else
+        $alert_id = NULL;
 
-            if ($alert_id != NULL) {
-                $response["error"] = false;
-                $response["message"] = "alert created successfully";
-                $response["alert_id"] = $alert_id;
-                echoRespnse(201, $response);
-            } else {
-                $response["error"] = true;
-                $response["message"] = "Failed to create alert. Please try again";
-                echoRespnse(200, $response);
-            }            
-        });
+    if ($alert_id != NULL) {
+        $response["error"] = false;
+        $response["message"] = "alert created successfully";
+        $response["alert_id"] = $alert_id;
+        echoRespnse(201, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Failed to create alert. Please try again";
+        echoRespnse(200, $response);
+    }
+});
 
 /**
  * Updating existing alert
@@ -231,65 +236,66 @@ $app->post('/alerts', 'authenticate', function() use ($app) {
  * params alert, status
  * url - /alerts/:id
  */
-$app->put('/alerts/:id', 'authenticate', function($alert_id) use($app) {
-            // check for required params
-            verifyRequiredParams(array('alert', 'status'));
+$app->put('/alerts/:id', 'authenticate', function ($alert_id) use ($app) {
+    // check for required params
+    verifyRequiredParams(array('alert', 'status'));
 
-            global $user_id;            
-            $alert = $app->request->put('alert');
-            $status = $app->request->put('status');
+    global $user_id;
+    $alert = $app->request->put('alert');
+    $status = $app->request->put('status');
 
-            $db = new DbHandler();
-            $response = array();
+    $db = new DbHandler();
+    $response = array();
 
-            // updating alert
-            $result = $db->updatealert($user_id, $alert_id, $alert, $status);
-            if ($result) {
-                // alert updated successfully
-                $response["error"] = false;
-                $response["message"] = "alert updated successfully";
-            } else {
-                // alert failed to update
-                $response["error"] = true;
-                $response["message"] = "alert failed to update. Please try again!";
-            }
-            echoRespnse(200, $response);
-        });
+    // updating alert
+    $result = $db->updatealert($user_id, $alert_id, $alert, $status);
+    if ($result) {
+        // alert updated successfully
+        $response["error"] = false;
+        $response["message"] = "alert updated successfully";
+    } else {
+        // alert failed to update
+        $response["error"] = true;
+        $response["message"] = "alert failed to update. Please try again!";
+    }
+    echoRespnse(200, $response);
+});
 
 /**
  * Deleting alert. Users can delete only their alerts
  * method DELETE
  * url /alerts
  */
-$app->delete('/alerts/:id', 'authenticate', function($alert_id) use($app) {
-            global $user_id;
+$app->delete('/alerts/:id', 'authenticate', function ($alert_id) use ($app) {
+    global $user_id;
 
-            $db = new DbHandler();
-            $response = array();
-            $result = $db->deletealert($user_id, $alert_id);
-            if ($result) {
-                // alert deleted successfully
-                $response["error"] = false;
-                $response["message"] = "alert deleted succesfully";
-            } else {
-                // alert failed to delete
-                $response["error"] = true;
-                $response["message"] = "alert failed to delete. Please try again!";
-            }
-            echoRespnse(200, $response);
-        });
+    $db = new DbHandler();
+    $response = array();
+    $result = $db->deletealert($user_id, $alert_id);
+    if ($result) {
+        // alert deleted successfully
+        $response["error"] = false;
+        $response["message"] = "alert deleted succesfully";
+    } else {
+        // alert failed to delete
+        $response["error"] = true;
+        $response["message"] = "alert failed to delete. Please try again!";
+    }
+    echoRespnse(200, $response);
+});
 
 require_once '../include/CompaniesEndpoint.php';
 
 /**
  * Verifying required params posted or not
  */
-function verifyRequiredParams($required_fields) {
+function verifyRequiredParams($required_fields)
+{
     $error = false;
     $error_fields = "";
     $request_params = array();
 
-    $json_params = (array) json_decode(file_get_contents("php://input"));
+    $json_params = (array)json_decode(file_get_contents("php://input"));
     if (count($_REQUEST) <= 0 && count($json_params) > 0) {
         $_REQUEST = $json_params;
     }
@@ -323,7 +329,8 @@ function verifyRequiredParams($required_fields) {
  * @param String $status_code Http response code
  * @param Int $response Json response
  */
-function echoRespnse($status_code, $response) {
+function echoRespnse($status_code, $response)
+{
     $app = \Slim\Slim::getInstance();
     // Http response code
     $app->status($status_code);
