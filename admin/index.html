@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- end: Mobile Specific -->
+
+    <!-- start: CSS -->
+    <link id="bootstrap-style" href="./lib/theme/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./lib/theme/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link id="base-style" href="./lib/theme/css/style.css" rel="stylesheet">
+    <link id="base-style-responsive" href="./lib/theme/css/style-responsive.css" rel="stylesheet">
+    <!-- ************* Datatables ************* -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/a5734b29083/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="stylehseet" type="text/css" href="//cdn.datatables.net/responsive/1.0.1/css/dataTables.responsive.css">
+    <!-- end: CSS -->
+
+
+    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <link id="ie-style" href="./lib/theme/css/ie.css" rel="stylesheet">
+        <![endif]-->
+
+    <!--[if IE 9]>
+        <link id="ie9style" href="./lib/theme/css/ie9.css" rel="stylesheet">
+        <![endif]-->
+
+        <!-- start: Favicon -->
+        <link rel="shortcut icon" href="./assets/images/icon.png">
+        <!-- end: Favicon -->
+        <link rel="stylesheet" type="text/css" href="./css/ie10mobile.css">
+        <link rel="stylesheet" type="text/css" href="./css/durandal.css">
+        <link rel="stylesheet" type="text/css" href="./css/toastr.min.css">
+        <link rel="stylesheet" type="text/css" href="./lib/theme/css/jquery-ui-1.8.21.custom.css"/>
+        <link rel ="stylesheet" type="text/css" href="./css/datepicker.css" />
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <!-- <link href='http://fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'> -->
+
+        <script type="text/javascript">
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement("style");
+            var mq = "@@-ms-viewport{width:auto!important}";
+            msViewportStyle.appendChild(document.createTextNode(mq));
+            document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+        }
+        </script>
+
+        <style>
+
+        .box-1 {
+            position:relative;
+            overflow:auto;
+            margin:0px;
+            float:left;
+            width: 100%;
+            background: #222;
+
+
+        }
+        /***********************/
+        /* Ajax Loader styles */
+        .ajax_loader {background: url("./assets/images/load_spin.gif") no-repeat center center transparent;width:100%;height:100%;}
+        .blue-loader .ajax_loader {background: url("./assets/images/ajax-loader_blue.gif") no-repeat center center transparent;}
+
+        </style>
+    </head>
+    <body class="box-1">
+        <div id="applicationHost">
+            <div class="page-splash"></div>
+            <div class="page-splash-message">
+                ADMINISTRATION
+            </div>
+            <div class="progress progress-striped active page-progress-bar">
+                <div class="bar" style="width: 100%;"></div>
+            </div>
+        </div>
+        <script src="./lib/jquery/jquery-1.9.1.min.js"></script>
+        <script src="./lib/knockout/knockout-3.2.0.js"></script>
+        <script src="./lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="./lib/theme/js/jquery-migrate-1.0.0.min.js"></script>
+        <script src="./lib/theme/js/jquery-ui-1.10.0.custom.min.js"></script>
+        <script src="./lib/theme/js/jquery.ui.touch-punch.js"></script>
+        <script src="./lib/theme/js/modernizr.js"></script>
+        <script src="./lib/theme/js/jquery.cookie.js"></script>
+        <script src="./lib/theme/js/excanvas.js"></script>
+        <script src="./lib/theme/js/retina.js"></script>
+        <script src="./lib/theme/js/jquery.uniform.min.js"></script>
+        <script src="./lib/theme/js/counter.js"></script>
+        <script src="./lib/theme/js/jquery.masonry.min.js"></script>
+        <script src="./lib/theme/js/jquery.imagesloaded.js"></script>
+        <script src="./lib/theme/js/custom.js"></script>
+
+        <script src="./lib/custom-libs/toastr.min.js"></script>
+        <script src="./lib/custom-libs/q.min.js"></script>
+
+        <script  src="./lib/custom-libs/moment.min.js"></script>
+        <script src="./lib/custom-libs/knockout.activity.js"></script>
+        <script  src="./lib/custom-libs/knockout.command.js"></script>
+        <script src="./lib/custom-libs/chosen.jquery.min.js"></script>
+        <script src="./lib/custom-libs/numeral.js"></script>
+        <script src="./lib/custom-libs/knockout.bindings.orderable.js"></script>
+        <script src="./lib/custom-libs/knockout.validation.min.js"></script>
+        <script src="./lib/custom-libs/knockout-bootstrap.js"></script>
+        <script src="./lib/custom-libs/myKnockoutHandlers.js"></script>
+        <script src="./lib/custom-libs/ajaxLoader.js"></script>
+        <script src="./lib/custom-libs/bootstrap-datepicker.js"> </script>
+        <script src="./lib/custom-libs/bootstrap-rating.js"> </script>
+
+        <script src="./lib/xlsx/cpexcel.js"> </script>
+        <script src="./lib/xlsx/jszip.js"> </script>
+        <script src="./lib/xlsx/lodash.min.js"> </script>        
+        <script src="./lib/xlsx/xlsx.min.js"> </script>
+        <script src="./lib/xlsx/xlsx-reader.js"> </script>
+
+        <script src="./lib/geocoder/geocoder.min.js"> </script>
+
+        <!-- ************* Datatables ************* -->
+
+        <!-- jQuery DataTables http://datatables.net -->
+        <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.js"></script>
+
+        <!-- Bootstrap DataTables http://www.datatables.net/manual/styling/bootstrap -->
+        <script src="./lib/datatables/dataTables.bootstrap.js"></script>
+
+        <!-- Responsive DataTables http://www.datatables.net/extensions/responsive/ -->
+        <script src="//cdn.datatables.net/responsive/1.0.1/js/dataTables.responsive.js"></script>
+<script src="./lib/custom-libs/auth.js"> </script>
+        <script src="lib/require/require.js" data-main="app/main"></script>
+        <!--<script src="app/main.js"></script>-->
+
+    </body>
+    </html>

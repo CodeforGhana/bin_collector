@@ -1,0 +1,68 @@
+﻿<section>
+  <h2 class="page-title" data-bind="text: title"></h2>
+
+  <div class="container-fluid" style="margin-bottom:60px;">
+    <div class="row-fluid">
+
+      <div class="btn-toolbar">
+        <div class="form-horizontal">
+          <button class="btn btn-primary" data-bind="click: addNew"><i class="icon-plus"></i> New User</button>
+
+          <div class="form-horizontal pull-right">        
+            <div class="input-append">          
+              <input  type="text" data-bind="value: searchText, valueUpdate: 'afterkeydown'" placeholder="Search ..." style="margin-top: 0px;height: 24px;"/>          
+              <button class="btn" data-bind="click: loadUsers">
+                <i class="icon-search"></i>
+              </button>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+      <div class="well">
+        <table class="table table-bordered table-striped">
+          <thead class="tableHeader">
+            <tr>
+              <th>#</th>
+              <th>UserName</th>  
+              <th class="hidden-phone">Email</th> 
+              <th style="width:100px">Actions</th> 
+            </tr>
+          </thead>
+          <tbody data-bind="foreach: pagedList">
+            <!--label-success  label-important-->
+            <tr class="details">
+              <td data-bind="html: ($index() + 1) + (($root.pageIndex()) * 20)"></td>
+              <td data-bind="html: username"></td>
+              <td data-bind="html: email" class="hidden-phone"></td>     
+              <td class="text-center">                  
+                <a class="btn btn-info details" href="#">
+                  <i class="halflings-icon white pencil"></i>  
+                </a>
+                <a class="btn btn-danger delete" href="#">
+                  <i class="halflings-icon white trash"></i> 
+                </a>
+              </td>         
+
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+       <ul>
+         <li data-bind="css: { disabled: pageIndex() === 0 }"><a href="#" data-bind="    click: previousPage">Previous</a></li>
+       </ul>
+       <ul data-bind="foreach: allPages">
+        <li data-bind="css: { active: $data.pageNumber === ($root.pageIndex() + 1) }"><a href="#" data-bind="    text: $data.pageNumber, click: function () { $root.moveToPage($data.pageNumber - 1); }"></a></li>
+      </ul>
+      <ul>
+       <li data-bind="css: { disabled: pageIndex() === maxPageIndex() }"><a href="#" data-bind="    click: nextPage">Next</a></li>
+     </ul>
+   </div>
+
+ </div>
+</div>
+</section>

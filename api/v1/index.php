@@ -24,11 +24,11 @@ function authenticate(\Slim\Route $route)
     $app = \Slim\Slim::getInstance();
 
     // Verifying Authorization Header
-    if (isset($headers['Authorization'])) {
+    if (isset($headers['Bin'])) {
         $db = new DbHandler();
 
         // get the api key
-        $api_key = $headers['Authorization'];
+        $api_key = $headers['Bin'];
         // validating api key
         if (!$db->isValidApiKey($api_key)) {
             // api key is not present in users table
@@ -102,33 +102,36 @@ $app->post('/register', function () use ($app) {
  */
 $app->post('/login', function () use ($app) {
     // check for required params
-    verifyRequiredParams(array('phone', 'password'));
 
-    $phone = $app->request()->post('phone');
-    $password = $app->request()->post('password');
+     $r = json_decode($app->request->getBody());
+    verifyRequiredParams(array('phone', 'password'),$r);
+    $response = array();
+    $password = $r->password;
+    $phone = $r->phone;
+
     $response = array('fields' => [$phone, $password]);
 
-    $db = new DbHandler();
+    $db = new dbhandler();
     // check for correct phone and password
     if ($db->checkLogin($phone, $password)) {
         // get the user by phone
         $user = $db->getUserByPhone($phone);
 
-        if ($user != NULL) {
+        if ($user != null) {
             $response["error"] = false;
             $response['name'] = $user['name'];
             $response['phone'] = $user['phone'];
-            $response['apiKey'] = $user['api_key'];
-            $response['createdAt'] = $user['created_at'];
+            $response['apikey'] = $user['api_key'];
+            $response['createdat'] = $user['created_at'];
         } else {
             // unknown error occurred
             $response['error'] = true;
-            $response['message'] = "An error occurred. Please try again";
+            $response['message'] = "an error occurred. please try again";
         }
     } else {
         // user credentials are wrong
         $response['error'] = true;
-        $response['message'] = 'Login failed. Incorrect credentials';
+        $response['message'] = 'login failed. incorrect credentials';
     }
 
     echoRespnse(200, $response);

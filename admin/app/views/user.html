@@ -1,0 +1,50 @@
+<section>
+    <h2 class="page-title" data-bind="text: title"></h2>
+
+    <div class="container-fluid" style="margin-bottom: 60px;">
+        <div class="row-fluid">
+            <div class="btn-toolbar">
+                 <button class="btn btn-primary" data-bind="click: newUser() ? create : save"><i class="icon-save"></i>Save</button>
+        <button class="btn btn-primary" data-bind="click: cancel"><i class="icon-remove"></i>Cancel</button>
+            </div>
+            <div class="well tab-primary ui-tabs">
+                <ul class="nav nav-tabs ui-tabs-nav">
+                    <li class="active"><a href="#home" data-toggle="tab">Profile</a></li>
+
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane active in" id="home">
+                        <form id="profileTab">
+
+                           <!--  <label>Picture</label>
+                            <img width="150px" height="150px" role="button" data-bind="attr: { alt: model().name, src: model().picture() }"> -->
+<div data-bind="visible:newUser">
+     <label>UserName</label>
+                            <input type="text" placeholder="username" name="name" class="input-xlarge" data-bind="value: model().username" />
+                             <label>Password</label>
+                            <input type="password" placeholder="Password" name="Password" class="input-xlarge" data-bind="value: model().password"/>
+                            <label>Confirm Password</label>
+                            <input type="password" placeholder="Confirm Password" name="ConfirmPassword" class="input-xlarge" data-bind="value: model().confirmPassword"/>
+
+</div>
+                           
+
+                            <label>Email</label>
+                            <input type="text" placeholder="email" name="email" class="input-xlarge" data-bind="value: model().email"/>
+
+                           
+
+                            <!--  <label>User is an Admin</label>
+                           <input type="checkbox" class="input-xlarge" data-bind="checked: model().isAdmin" /> -->
+
+                        </form>
+
+                    </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+</section>
