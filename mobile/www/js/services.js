@@ -84,20 +84,17 @@
                         var deferred;
                         deferred = $q.defer();
 
-                        $http({
-                            url: appConfig.apiUrl + 'register',
-                            method: 'POST',
-                            data: $httpParamSerializerJQLike(user),
-                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                        }).success(function (resp) {
-                            /* Log the user in automatically */
-                            if (!resp.error) {
-                                cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
-                            }
-                            deferred.resolve(resp);
-                        }).error(function (httpResp) {
-                            deferred.reject(httpResp);
-                        });
+			$http.post(appConfig.apiUrl + 'register', user)
+				.success(function (resp) {
+		                    /* Log the user in automatically */
+		                    if (!resp.error) {
+		                        cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
+		                    }
+		                    deferred.resolve(resp);
+		                })
+				.error(function (httpResp) {
+		                    deferred.reject(httpResp);
+		                });
 
                         return deferred.promise;
                     },
@@ -108,19 +105,16 @@
                         if (isLoggedIn(user))
                             deferred.resolve({error: false});
                         else {
-                            $http({
-                                url: appConfig.apiUrl + 'login',
-                                method: 'POST',
-                                data: $httpParamSerializerJQLike(user),
-                                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                            }).success(function (resp) {
-                                if (!resp.error) {
-                                    cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
-                                }
-                                deferred.resolve(resp);
-                            }).error(function (httpResp) {
-                                deferred.reject(httpResp);
-                            });
+			    $http.post(appConfig.apiUrl + 'login', user)
+			         .success(function (resp) {
+                                     if (!resp.error) {
+                                         cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
+                                     }
+                                    deferred.resolve(resp);
+                                  })
+				 .error(function (httpResp) {
+                                     deferred.reject(httpResp);
+                                 });
                         }
 
                         return deferred.promise;
@@ -174,7 +168,7 @@
                             data: $httpParamSerializerJQLike(data),
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
-                                'Authorization': userService.getApiKey()
+                                'Bin': userService.getApiKey()
                             }
                         }).success(function (resp) {
                             if (!resp.error)
@@ -204,7 +198,7 @@
                             $http({
                                 url: key,
                                 method: 'GET',
-                                headers: {'Authorization': userService.getApiKey()}
+                                headers: {'Bin': userService.getApiKey()}
                             }).success(function (response) {
                                 tempCache.put(key, response.companies);
                                 deferred.resolve(response.companies);
