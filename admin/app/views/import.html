@@ -1,0 +1,33 @@
+<form action="" method="post" enctype="multipart/form-data">
+            <div class='form-group'>
+                <label for='excel_file'>Excel File</label>
+                <input id="xlsxFile" type="file" name="excel_file" accept=".xlsx" required="true" >
+            </div>
+<button class="btn btn-primary" data-bind="click:savemedia">Save Data</button>
+
+        </form>
+        <div class="well">
+
+    <table class="table table-bordered table-striped">
+      <thead class="tableHeader">
+        <tr>
+          <th>#</th>
+          <th>Location</th> 
+          <th>Source</th> 
+          <th>Longitude</th> 
+          <th>Latitude</th> 
+        </tr>
+      </thead>
+        <tbody data-bind="foreach: excelArray">
+            <!--label-success  label-important-->
+            <tr class="details">
+                <td data-bind="html: ($index() + 1)"></td>
+                <td data-bind="html: Location"></td>
+                <td data-bind="html: Source"></td>
+                <td data-bind="html: Longitude"></td>
+                <td data-bind="html: Latitude"></td>
+            </tr>
+       
+        </tbody>
+    </table>
+    </div>

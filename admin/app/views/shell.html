@@ -1,0 +1,43 @@
+﻿<div>
+
+    <header data-bind="compose: { view: 'nav' }, visible: isLoggedIn"></header>
+
+        <div class="container-fluid-full">
+        <div class="row-fluid">
+                
+            <!-- start: Main Menu -->
+            <div id="sidebar-left" class="span2"  data-bind="visible: isLoggedIn">
+                <div class="nav-collapse sidebar-nav">
+                    <ul class="nav nav-tabs nav-stacked main-menu">
+                        <li><a href="#"><i class="icon-home"></i><span class="hidden-tablet"> Home</span></a></li>   
+                        
+                        <li><a href="#companies"><i class="icon-user"></i><span class="hidden-tablet"> Companies</span></a></li>  
+
+                       
+                        <li><a href="#alerts"><i class="icon-user"></i><span class="hidden-tablet"> Alerts</span></a></li>
+
+                        <li><a href="#users"><i class="icon-lock"></i><span class="hidden-tablet"> Users</span></a></li>
+
+                        <li><a href="#report"><i class="icon-lock"></i><span class="hidden-tablet"> Report </span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- end: Main Menu -->
+            
+            <!-- start: Content -->
+            <div id="content" class="span10" data-bind="router: { transition: 'entrance', cacheViews: false }">
+            
+                              
+       
+
+    </div><!--/.fluid-container-->
+    
+            <!-- end: Content -->
+        </div><!--/#content.span10-->
+        </div><!--/fluid-row-->
+        
+    
+    <div class="clearfix"></div>
+    
+    <footer data-bind="compose: { view: 'footer' }, visible: isLoggedIn"></footer>
+</div>
