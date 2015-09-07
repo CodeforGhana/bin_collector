@@ -4,7 +4,7 @@
     angular.module('starter', [
         'ionic', 'bin.controllers', 'ngMessages', 'bin.services', 'angular-cache'
     ])
-        .constant('appConfig', {apiUrl: 'http://localhost/bin_collector/api/v1/'})
+        .constant('appConfig', {apiUrl: 'http://bin.afrikgeek.com/v1/'})
         .run(function ($ionicPlatform) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
