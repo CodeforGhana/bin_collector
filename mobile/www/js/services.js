@@ -87,10 +87,11 @@
                         $http({
                             url: appConfig.apiUrl + 'register', 
                             method: 'POST',
-                            data: $httpParamSerializerJQLike(user),
+                            data: user
+                            /* data: $httpParamSerializerJQLike(user),
                             headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            }})
+                                'Content-Type': 'application/x-www-form-urlencoded'} */
+                            })
                             .then(function (httpResponse) {
                                 console.log(httpResponse);
                                 resp = httpResponse.data;
@@ -117,7 +118,7 @@
                                     resp = httpResponse.data;
                                     console.log(httpResponse);
                                     if (!resp.error) {
-                                        cacheUserInfo(resp.phone, resp.apikey, resp['name']);
+                                        cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
                                     }
                                     deferred.resolve(resp);
                                 }, function (httpResp) {
