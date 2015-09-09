@@ -17,7 +17,8 @@
                 }
             });
         })
-        .run(['$templateCache', '$http', function ($templateCache, $http) {
+        .run(['$templateCache', '$http', '$timeout', '$state', function ($templateCache, $http, $timeout, $state) {
+            $timeout(function() {$state.go('login');}, 5000);
             $http.get('templates/form_errors.html')
                 .then(function (response) {
                     $templateCache.put('errors_template', response.data);
