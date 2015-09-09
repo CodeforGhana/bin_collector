@@ -86,12 +86,7 @@
             var $state = $injector.get("$state");
             var userService = $injector.get("userService");
 
-            console.log('is logged in: ' + userService.isLoggedIn());
-            if (!userService.isLoggedIn()) {
-                $state.go('login');
-            } else {
-                $state.go('menu.report');
-            }
+            $state.go('login');
             return;
         });
     }
