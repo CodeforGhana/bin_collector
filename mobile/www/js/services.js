@@ -81,41 +81,41 @@
 
                 return {
                     createAccount: function (user) {
-                        var deferred;
+                        var deferred, resp;
                         deferred = $q.defer();
 
-                        $http.post(
-                            appConfig.apiUrl + 'register',
-                            user
-                        ).success(function (resp) {
-                            /* Log the user in automatically */
-                            if (!resp.error) {
-                                cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
-                            }
-                            deferred.resolve(resp);
-                        }).error(function (httpResp) {
-                            deferred.reject(httpResp);
-                        });
+                        $http.post(appConfig.apiUrl + 'register', user)
+                            .then(function (httpResponse) {
+                                resp = httpResponse.data;
+                                /* Log the user in automatically */
+                                if (!resp.error) {
+                                    cacheUserInfo(resp.phone, resp.apikey, resp['name']);
+                                }
+                                deferred.resolve(resp);
+                            }, function (httpResp) {
+                                deferred.reject(httpResp);
+                            });
 
                         return deferred.promise;
                     },
                     login: function (user) {
-                        var deferred;
+                        var deferred, resp;
                         deferred = $q.defer();
 
                         if (isLoggedIn(user))
                             deferred.resolve({error: false});
                         else {
-                            $http.post(appConfig.apiUrl + 'login',
-                               user
-                            ).success(function (resp) {
-                                if (!resp.error) {
-                                    cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
-                                }
-                                deferred.resolve(resp);
-                            }).error(function (httpResp) {
-                                deferred.reject(httpResp);
-                            });
+                            $http.post(appConfig.apiUrl + 'login', user)
+                                .then(function (httpResponse) {
+                                    resp = httpResponse.data;
+                                    console.log(httpResponse);
+                                    if (!resp.error) {
+                                        cacheUserInfo(resp.phone, resp.apikey, resp['name']);
+                                    }
+                                    deferred.resolve(resp);
+                                }, function (httpResp) {
+                                    deferred.reject(httpResp);
+                                });
                         }
 
                         return deferred.promise;

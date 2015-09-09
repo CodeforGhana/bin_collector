@@ -71,7 +71,10 @@
                 function login() {
                     userService.login(self.user)
                         .then(function (resp) {
+                            console.log('success response.');
+                            console.log(resp);
                             if (!resp.error) {
+                                console.log('redirecting...');
                                 self.closeModal();
                                 $state.go('menu.report')
                             } else
