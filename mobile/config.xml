@@ -2,10 +2,10 @@
 <widget id="com.ionicframework.bincollector483951" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>binCollector</name>
   <description>
-        An Ionic Framework and Cordova project.
+        Application for monitoring bin collection in La Nkwantanang District in Ghana
     </description>
   <author email="shadrack.boadu@gmail.com" href="http://twitter.com/skboadu">
-      Ionic Framework Team
+      Mobile Web Ghana Team
     </author>
   <content src="index.html"/>
   <access origin="*"/>
