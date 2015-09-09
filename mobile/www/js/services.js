@@ -88,9 +88,6 @@
                             url: appConfig.apiUrl + 'register', 
                             method: 'POST',
                             data: user
-                            /* data: $httpParamSerializerJQLike(user),
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'} */
                             })
                             .then(function (httpResponse) {
                                 console.log(httpResponse);
