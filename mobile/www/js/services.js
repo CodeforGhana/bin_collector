@@ -72,7 +72,7 @@
                 }
 
                 function clearCache() {
-
+                    
                 }
 
                 function isLoggedIn(user) {
@@ -84,12 +84,19 @@
                         var deferred, resp;
                         deferred = $q.defer();
 
-                        $http.post(appConfig.apiUrl + 'register', user)
+                        $http({
+                            url: appConfig.apiUrl + 'register', 
+                            method: 'POST',
+                            data: $httpParamSerializerJQLike(user),
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }})
                             .then(function (httpResponse) {
+                                console.log(httpResponse);
                                 resp = httpResponse.data;
                                 /* Log the user in automatically */
                                 if (!resp.error) {
-                                    cacheUserInfo(resp.phone, resp.apikey, resp['name']);
+                                    cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
                                 }
                                 deferred.resolve(resp);
                             }, function (httpResp) {
