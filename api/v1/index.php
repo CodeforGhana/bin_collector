@@ -61,14 +61,20 @@ function authenticate(\Slim\Route $route)
  */
 $app->post('/register', function () use ($app) {
     // check for required params
-    verifyRequiredParams(array('name', 'phone', 'password'));
+    $r = json_decode($app->request->getBody());
+    verifyRequiredParams(array('name', 'phone', 'password'), $r);
 
     $response = array();
+    $password = $r->password;
+    $phone = $r->phone;
+    $name = $r->name;
+
+    $response = array('fields' => [$phone, $password, $name]);
 
     // reading post params
-    $name = $app->request->post('name');
-    $phone = $app->request->post('phone');
-    $password = $app->request->post('password');
+    // $name = $app->request->post('name');
+    // $phone = $app->request->post('phone');
+    // $password = $app->request->post('password');
 
     $db = new DbHandler();
     $res = $db->createUser($name, $phone, $password);
@@ -121,7 +127,7 @@ $app->post('/login', function () use ($app) {
             $response["error"] = false;
             $response['name'] = $user['name'];
             $response['phone'] = $user['phone'];
-            $response['apikey'] = $user['api_key'];
+            $response['apiKey'] = $user['api_key'];
             $response['createdat'] = $user['created_at'];
         } else {
             // unknown error occurred
