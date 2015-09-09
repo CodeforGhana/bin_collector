@@ -4,7 +4,7 @@
     angular.module('starter', [
         'ionic', 'bin.controllers', 'ngMessages', 'bin.services', 'angular-cache'
     ])
-        .constant('appConfig', {apiUrl: 'http://bin.afrikgeek.com/v1/'})
+        .constant('appConfig', {apiUrl: 'http://localhost/binCollector/api/v1/'})
         .run(function ($ionicPlatform) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -86,10 +86,13 @@
             var $state = $injector.get("$state");
             var userService = $injector.get("userService");
 
-            if (!userService.isLoggedIn())
+            console.log('is logged in: ' + userService.isLoggedIn());
+            if (!userService.isLoggedIn()) {
                 $state.go('login');
-            else
+            } else {
                 $state.go('menu.report');
+            }
+            return;
         });
     }
 })();
