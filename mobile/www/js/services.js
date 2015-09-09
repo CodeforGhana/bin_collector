@@ -90,7 +90,6 @@
                             data: user
                             })
                             .then(function (httpResponse) {
-                                console.log(httpResponse);
                                 resp = httpResponse.data;
                                 /* Log the user in automatically */
                                 if (!resp.error) {
@@ -113,7 +112,6 @@
                             $http.post(appConfig.apiUrl + 'login', user)
                                 .then(function (httpResponse) {
                                     resp = httpResponse.data;
-                                    console.log(httpResponse);
                                     if (!resp.error) {
                                         cacheUserInfo(resp.phone, resp.apiKey, resp['name']);
                                     }
