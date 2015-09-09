@@ -1,6 +1,7 @@
 <?php
 
 require_once '../include/Cors.php';
+require_once '../include/mysql_crud.php';
 require_once '../include/DbHandler.php';
 require_once '../include/PassHash.php';
 require '.././libs/Slim/Slim.php';
