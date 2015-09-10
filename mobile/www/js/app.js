@@ -17,20 +17,19 @@
                 }
             });
         })
-        .run(['$templateCache', '$http', '$timeout', '$state', function ($templateCache, $http, $timeout, $state) {
-            $timeout(function() {$state.go('login');}, 5000);
+        .run(['$templateCache', '$http', function ($templateCache, $http) {
             $http.get('templates/form_errors.html')
                 .then(function (response) {
                     $templateCache.put('errors_template', response.data);
                 })
         }])
-        .config(function (CacheFactoryProvider) {
+        .config(['CacheFactoryProvider', function (CacheFactoryProvider) {
             /* Items expire after 1 month */
             angular.extend(CacheFactoryProvider.defaults, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 storageMode: 'localStorage'
             });
-        })
+        }])
         .config(['$httpProvider', function($httpProvider) {
             $httpProvider.defaults.headers.common["X_REQUESTED_WITH"] = 'XMLHttpRequest';
         }])
@@ -87,7 +86,10 @@
             var $state = $injector.get("$state");
             var userService = $injector.get("userService");
 
-            $state.go('login');
+            if (!userService.isLoggedIn())
+                $state.go('login');
+            else 
+                $state.go('menu.report');
             return;
         });
     }
