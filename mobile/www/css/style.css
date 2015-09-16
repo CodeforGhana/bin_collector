@@ -25,8 +25,11 @@
 .login-page .signup-link:hover {
     text-decoration: underline;
 }
-.app-content .main-content, .status-page .main-content {
+.app-content .main-content {
     padding-top: 25%;
+}
+.status-page .main-content {
+    padding-top: 15%;
 }
 .app-content, .status-page {
     background-color: #e4e5e7;

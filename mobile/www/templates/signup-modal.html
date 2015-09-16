@@ -11,7 +11,7 @@
                 <ion-item class="item-input" ng-if="loginCtrl.isSignupModal"
                           ng-class="{'has-error': (signupForm.uname.$dirty || loginCtrl.isSubmit) && signupForm.uname.$invalid}">
                     <!-- Name field for signup -->
-                    <input type="tel" name="uname" ng-model="loginCtrl.user.name" required
+                    <input type="text" name="uname" ng-model="loginCtrl.user.name" required
                            placeholder="Your fullname" ng-if="loginCtrl.isSignupModal">
                 </ion-item>
                 <div class="form-errors" ng-messages="signupForm.uname.$error"
@@ -50,7 +50,7 @@
                     <div class="form-error" ng-message="minlength">Secret pin must be at least 6 characters long!</div>
                 </div>
                 <!-- Submit button -->
-                <button class="button button-block button-log-in" ng-disabled="loginCtrl.isCreatingAccount">
+                <button class="button button-block button-positive" ng-disabled="loginCtrl.isCreatingAccount">
                     <span ng-hide="loginCtrl.isSubmitting">
                         {{loginCtrl.isLoginModal ? 'Log In' : 'Create Account'}}
                     </span>
